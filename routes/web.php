@@ -35,6 +35,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('{user:username}/{project:slug}')->group(function () {
         Route::get('/', [ProjectController::class, 'show'])->name('projects.show');
+        Route::delete('/', [ProjectController::class, 'destroy'])->name('projects.destroy');
         
         Route::post('nodes', [NodeController::class, 'store'])->name('nodes.store');
         Route::get('nodes/{node}', [NodeController::class, 'show'])->name('nodes.show');

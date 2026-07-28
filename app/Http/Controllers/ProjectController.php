@@ -87,4 +87,15 @@ class ProjectController extends Controller
             'initialExpandedFolders' => $expandedFolders,
         ]);
     }
+
+    public function destroy(Request $request, User $user, Project $project)
+    {
+        if ($project->user_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        $project->delete();
+
+        return redirect()->route('dashboard', ['user' => $request->user()->username]);
+    }
 }

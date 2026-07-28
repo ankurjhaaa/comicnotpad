@@ -135,7 +135,7 @@ export default function Login() {
                 </div>
                 
                 {/* Decorative background blur */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] opacity-10 pointer-events-none rounded-full blur-[100px] z-[-1]" style={{ background: 'radial-gradient(circle, var(--text) 0%, transparent 70%)' }}></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 opacity-10 pointer-events-none rounded-full blur-[100px] z-[-1]" style={{ background: 'radial-gradient(circle, var(--text) 0%, transparent 70%)' }}></div>
             </div>
         </PubLayout>
     );
