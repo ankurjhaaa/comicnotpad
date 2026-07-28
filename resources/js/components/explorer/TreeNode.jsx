@@ -24,7 +24,7 @@ export function TreeNode({ node, activeNodeId, depth = 0, onSelect, onContextMen
     return (
         <div>
             <div
-                className="tree-node flex items-center gap-1 rounded-sm px-2 py-[3px] text-[13px]"
+                className="tree-node flex items-center gap-1 rounded-sm px-2 py-0.75 text-[13px]"
                 style={{
                     paddingLeft: `${depth * 16 + 8}px`,
                     backgroundColor: isActive ? 'var(--selection)' : 'transparent',

@@ -57,7 +57,7 @@ export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explo
 
                         {/* Resize handle */}
                         <div
-                            className="w-[3px] shrink-0 cursor-col-resize transition-colors"
+                            className="w-0.75 shrink-0 cursor-col-resize transition-colors"
                             style={{ backgroundColor: 'transparent' }}
                             onMouseDown={onResizeStart}
                             onMouseEnter={(e) =>

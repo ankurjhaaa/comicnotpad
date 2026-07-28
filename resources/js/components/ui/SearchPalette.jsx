@@ -124,7 +124,7 @@ export function SearchPalette({ isOpen, onClose, onSelect }) {
                 </div>
 
                 {/* Results */}
-                <div className="max-h-[300px] overflow-y-auto">
+                <div className="max-h-75 overflow-y-auto">
                     {searching && (
                         <div
                             className="px-4 py-3 text-sm"
