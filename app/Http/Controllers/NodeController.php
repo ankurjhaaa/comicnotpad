@@ -27,12 +27,12 @@ class NodeController extends Controller
         }
 
         return Inertia::render('home', [
-            'tree' => Inertia::defer(fn () => Node::query()
+            'tree' => Node::query()
                 ->root()
                 ->notTrashed()
                 ->with('childrenRecursive')
                 ->orderBy('sort_order')
-                ->get()),
+                ->get(),
             'activeNode' => $activeNode,
         ]);
     }

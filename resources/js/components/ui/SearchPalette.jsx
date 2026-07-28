@@ -69,7 +69,7 @@ export function SearchPalette({ isOpen, onClose, onSelect }) {
             setSelectedIndex((prev) => Math.max(prev - 1, 0));
         } else if (e.key === 'Enter' && results[selectedIndex]) {
             e.preventDefault();
-            onSelect(results[selectedIndex]);
+            onSelect(results[selectedIndex], query);
             onClose();
         } else if (e.key === 'Escape') {
             onClose();
@@ -154,7 +154,7 @@ export function SearchPalette({ isOpen, onClose, onSelect }) {
                             }}
                             onMouseEnter={() => setSelectedIndex(i)}
                             onClick={() => {
-                                onSelect(result);
+                                onSelect(result, query);
                                 onClose();
                             }}
                         >

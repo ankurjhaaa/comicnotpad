@@ -10,11 +10,12 @@ export default function Home({ tree, activeNode: initialActiveNode }) {
     const [activeNode, setActiveNode] = useState(initialActiveNode || null);
     const [content, setContent] = useState(initialActiveNode?.content || '');
     const [wordCount, setWordCount] = useState(0);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const { saveStatus, saveNow } = useAutosave(activeNode?.id, content);
 
     const handleSelectNode = useCallback(
-        (node) => {
+        (node, query = '') => {
             // Save current content first
             saveNow();
 
@@ -29,6 +30,7 @@ export default function Home({ tree, activeNode: initialActiveNode }) {
                 .then((data) => {
                     setActiveNode(data);
                     setContent(data.content || '');
+                    setSearchQuery(query);
                 })
                 .catch((err) => {
                     console.error('Failed to load node:', err);
@@ -38,8 +40,8 @@ export default function Home({ tree, activeNode: initialActiveNode }) {
     );
 
     const handleSearchSelect = useCallback(
-        (result) => {
-            handleSelectNode(result);
+        (result, query) => {
+            handleSelectNode(result, query);
         },
         [handleSelectNode],
     );
@@ -53,6 +55,8 @@ export default function Home({ tree, activeNode: initialActiveNode }) {
 
     const handleContentChange = useCallback((html) => {
         setContent(html);
+        // Clear search highlight once user edits
+        setSearchQuery('');
     }, []);
 
     const handleWordCountChange = useCallback((count) => {
@@ -78,6 +82,7 @@ export default function Home({ tree, activeNode: initialActiveNode }) {
                 saveStatus={saveStatus}
                 explorerContent={explorerContent}
                 onSearchSelect={handleSearchSelect}
+                onSearchOpen={saveNow}
             >
                 <div className="flex h-full flex-col">
                     {/* Breadcrumb */}
@@ -93,6 +98,7 @@ export default function Home({ tree, activeNode: initialActiveNode }) {
                     <div className="min-h-0 flex-1">
                         <Editor
                             node={activeNode}
+                            searchQuery={searchQuery}
                             onContentChange={handleContentChange}
                             onWordCountChange={handleWordCountChange}
                         />

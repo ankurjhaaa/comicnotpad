@@ -35,6 +35,8 @@ export function Explorer({ tree = [], activeNodeId, onSelect, onSearch }) {
             type: createModal.type,
             parent_id: createModal.parentId || null,
         }, {
+            preserveState: true,
+            preserveScroll: true,
             onSuccess: () => {
                 setCreateModal(null);
                 setNewItemName('');
@@ -50,7 +52,10 @@ export function Explorer({ tree = [], activeNodeId, onSelect, onSearch }) {
             return;
         }
 
-        router.delete(`/nodes/${node.id}`);
+        router.delete(`/nodes/${node.id}`, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     }
 
     const contextMenuItems = contextMenu

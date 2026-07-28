@@ -1,11 +1,11 @@
-import { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 import { useKeyboard } from '@/hooks/useKeyboard';
 import { useResizable } from '@/hooks/useResizable';
 import { StatusBar } from '@/components/ui/StatusBar';
 import { SearchPalette } from '@/components/ui/SearchPalette';
 
-export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explorerContent, onSearch, onSearchSelect }) {
+export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explorerContent, onSearch, onSearchSelect, onSearchOpen }) {
     const { theme, toggleTheme } = useTheme();
     const { width: explorerWidth, onMouseDown: onResizeStart } = useResizable();
     const [showExplorer, setShowExplorer] = useState(true);
@@ -14,7 +14,10 @@ export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explo
 
     const shortcuts = useMemo(
         () => ({
-            'mod+k': () => setShowSearch(true),
+            'mod+k': () => {
+                setShowSearch(true);
+                if (onSearchOpen) onSearchOpen();
+            },
             'mod+b': () => setShowExplorer((prev) => !prev),
             'mod+shift+f': () => {
                 setFocusMode((prev) => !prev);
@@ -26,14 +29,15 @@ export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explo
                 }
             },
         }),
-        [focusMode],
+        [focusMode, onSearchOpen],
     );
 
     useKeyboard(shortcuts);
 
     const handleSearchOpen = useCallback(() => {
         setShowSearch(true);
-    }, []);
+        if (onSearchOpen) onSearchOpen();
+    }, [onSearchOpen]);
 
     return (
         <div
@@ -52,7 +56,7 @@ export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explo
                                 borderRight: '1px solid var(--border)',
                             }}
                         >
-                            {explorerContent}
+                            {explorerContent && React.cloneElement(explorerContent, { onSearch: handleSearchOpen })}
                         </div>
 
                         {/* Resize handle */}
