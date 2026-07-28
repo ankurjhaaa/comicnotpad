@@ -4,8 +4,9 @@ import { FilePlus, FolderPlus, Search } from 'lucide-react';
 import { TreeNode } from './TreeNode';
 import { ContextMenu } from '../ui/ContextMenu';
 import { Modal } from '../ui/Modal';
+import { store as nodesStore, destroy as nodesDestroy } from '@/actions/App/Http/Controllers/NodeController';
 
-export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialExpandedFolders, projectUrl }) {
+export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialExpandedFolders, project }) {
     const [contextMenu, setContextMenu] = useState(null);
     const [createModal, setCreateModal] = useState(null);
     const [newItemName, setNewItemName] = useState('');
@@ -42,7 +43,7 @@ export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialE
 
         setSubmitting(true);
 
-        router.post(`${projectUrl}/nodes`, {
+        router.post(nodesStore.url({ user: project.user.username, project: project.slug }), {
             name: newItemName.trim(),
             type: createModal.type,
             parent_id: createModal.parentId || null,
@@ -64,7 +65,7 @@ export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialE
             return;
         }
 
-        router.delete(`${projectUrl}/nodes/${node.id}`, {
+        router.delete(nodesDestroy.url({ user: project.user.username, project: project.slug, node: node.id }), {
             preserveState: true,
             preserveScroll: true,
         });

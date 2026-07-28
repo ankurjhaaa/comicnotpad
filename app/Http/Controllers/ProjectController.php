@@ -85,7 +85,6 @@ class ProjectController extends Controller
                 ->get(),
             'activeNode' => $activeNode,
             'initialExpandedFolders' => $expandedFolders,
-            'projectUrl' => url("/{$user->username}/{$project->slug}"),
         ]);
     }
 }

@@ -91,7 +91,7 @@ export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explo
                 isOpen={showSearch}
                 onClose={() => setShowSearch(false)}
                 onSelect={onSearchSelect}
-                projectUrl={explorerContent?.props?.projectUrl}
+                project={explorerContent?.props?.project}
             />
         </div>
     );

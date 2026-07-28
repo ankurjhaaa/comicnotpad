@@ -1,5 +1,6 @@
-import { useForm, Head } from '@inertiajs/react';
+import { Head, Link, useForm } from '@inertiajs/react';
 import PubLayout from '@/layouts/PubLayout';
+import { register, login } from '@/routes';
 
 export default function Register() {
     const { data, setData, post, processing, errors } = useForm({
@@ -12,7 +13,7 @@ export default function Register() {
 
     const submit = (e) => {
         e.preventDefault();
-        post('/register');
+        post(register.url());
     };
 
     return (
@@ -193,9 +194,9 @@ export default function Register() {
                         <div className="mt-8 pt-6 border-t text-center" style={{ borderColor: 'var(--border)' }}>
                             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                                 Already have an account?{' '}
-                                <a href="/login" className="font-medium transition-colors hover:underline underline-offset-4" style={{ color: 'var(--text)' }}>
+                                <Link href={login.url()} className="font-semibold transition-colors hover:underline" style={{ color: 'var(--text)' }}>
                                     Sign in
-                                </a>
+                                </Link>
                             </p>
                         </div>
                     </div>

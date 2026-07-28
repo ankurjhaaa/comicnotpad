@@ -5,14 +5,15 @@ import { Explorer } from '@/components/explorer/Explorer';
 import { Editor } from '@/components/editor/Editor';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { useAutosave } from '@/hooks/useAutosave';
+import { show as nodesShow } from '@/actions/App/Http/Controllers/NodeController';
 
-export default function Workspace({ project, projectUrl, tree, activeNode: initialActiveNode, initialExpandedFolders }) {
+export default function Workspace({ project, tree, activeNode: initialActiveNode, initialExpandedFolders }) {
     const [activeNode, setActiveNode] = useState(initialActiveNode || null);
     const [content, setContent] = useState(initialActiveNode?.content || '');
     const [wordCount, setWordCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const { saveStatus, saveNow } = useAutosave(activeNode?.id, content, projectUrl);
+    const { saveStatus, saveNow } = useAutosave(activeNode?.id, content, project);
 
     const handleSelectNode = useCallback(
         (node, query = '') => {
@@ -20,7 +21,7 @@ export default function Workspace({ project, projectUrl, tree, activeNode: initi
             saveNow();
 
             // Fetch full node data via JSON
-            fetch(`${projectUrl}/nodes/${node.id}`, {
+            fetch(nodesShow.url({ user: project.user.username, project: project.slug, node: node.id }), {
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
@@ -70,9 +71,10 @@ export default function Workspace({ project, projectUrl, tree, activeNode: initi
                 activeNodeId={activeNode?.id}
                 onSelect={handleSelectNode}
                 initialExpandedFolders={initialExpandedFolders}
+                project={project}
             />
         ),
-        [tree, activeNode?.id, handleSelectNode, initialExpandedFolders],
+        [tree, activeNode?.id, handleSelectNode, initialExpandedFolders, project],
     );
 
     return (

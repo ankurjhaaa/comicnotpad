@@ -1,5 +1,6 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import PubLayout from '@/layouts/PubLayout';
+import { login, register, dashboard } from '@/routes';
 
 export default function Welcome() {
     const { auth } = usePage().props;
@@ -29,17 +30,17 @@ export default function Welcome() {
                 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center z-10 w-full sm:w-auto">
                     {auth.user ? (
-                        <Link href={`/${auth.user.username}`} className="px-8 py-3.5 rounded-lg text-sm font-medium transition-all hover:-translate-y-0.5 shadow-lg flex items-center justify-center gap-2" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
+                        <Link href={dashboard.url({ user: auth.user.username })} className="px-8 py-3.5 rounded-lg text-sm font-medium transition-all hover:-translate-y-0.5 shadow-lg flex items-center justify-center gap-2" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
                             Go to your Dashboard
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </Link>
                     ) : (
                         <>
-                            <Link href="/register" className="px-8 py-3.5 rounded-lg text-sm font-medium transition-all hover:-translate-y-0.5 shadow-lg flex items-center justify-center gap-2" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
+                            <Link href={register.url()} className="px-8 py-3.5 rounded-lg text-sm font-medium transition-all hover:-translate-y-0.5 shadow-lg flex items-center justify-center gap-2" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
                                 Start Writing Now
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                             </Link>
-                            <Link href="/login" className="px-8 py-3.5 rounded-lg text-sm font-medium transition-all hover:bg-opacity-80 flex items-center justify-center border" style={{ backgroundColor: 'transparent', color: 'var(--text)', borderColor: 'var(--border)' }}>
+                            <Link href={login.url()} className="px-8 py-3.5 rounded-lg text-sm font-medium transition-all hover:bg-opacity-80 flex items-center justify-center border" style={{ backgroundColor: 'transparent', color: 'var(--text)', borderColor: 'var(--border)' }}>
                                 Sign In
                             </Link>
                         </>

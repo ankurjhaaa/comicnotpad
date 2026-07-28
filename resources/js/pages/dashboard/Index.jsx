@@ -1,5 +1,8 @@
 import { useForm, Head, Link } from '@inertiajs/react';
 import UserLayout from '@/layouts/UserLayout';
+import { store as projectsStore } from '@/actions/App/Http/Controllers/ProjectController';
+import { dashboard } from '@/routes';
+import projectsRoutes from '@/routes/projects';
 
 export default function Dashboard({ projects }) {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -8,7 +11,7 @@ export default function Dashboard({ projects }) {
 
     const submit = (e) => {
         e.preventDefault();
-        post('/projects', {
+        post(projectsStore.url(), {
             onSuccess: () => reset(),
         });
     };
@@ -67,7 +70,7 @@ export default function Dashboard({ projects }) {
                     {projects.map((project) => (
                         <Link 
                             key={project.id}
-                            href={`/${project.user?.username || 'user'}/${project.slug}`} 
+                            href={projectsRoutes.show.url({ user: project.user?.username || 'user', project: project.slug })} 
                             className="block rounded-lg p-6 transition-all hover:-translate-y-0.5"
                             style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border)' }}
                         >

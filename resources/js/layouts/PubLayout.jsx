@@ -1,5 +1,6 @@
 import { useTheme } from '@/hooks/useTheme';
 import { Link, usePage } from '@inertiajs/react';
+import { home, login, register, dashboard } from '@/routes';
 
 export default function PubLayout({ children }) {
     const { theme, toggleTheme } = useTheme();
@@ -32,15 +33,15 @@ export default function PubLayout({ children }) {
                             {theme === 'dark' ? 'Light' : 'Dark'}
                         </button>
                         {auth.user ? (
-                            <Link href={`/${auth.user.username}`} className="px-5 py-2.5 rounded-md font-medium transition-transform hover:-translate-y-0.5 shadow-sm" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
+                            <Link href={dashboard.url({ user: auth.user.username })} className="px-5 py-2.5 rounded-md font-medium transition-transform hover:-translate-y-0.5 shadow-sm" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
                                 Dashboard
                             </Link>
                         ) : (
                             <>
-                                <Link href="/login" className="font-medium transition-colors" style={{ color: 'var(--text-muted)' }} onMouseEnter={(e) => e.target.style.color = 'var(--text)'} onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
+                                <Link href={login.url()} className="font-medium transition-colors" style={{ color: 'var(--text-muted)' }} onMouseEnter={(e) => e.target.style.color = 'var(--text)'} onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
                                     Log in
                                 </Link>
-                                <Link href="/register" className="px-5 py-2.5 rounded-md font-medium transition-transform hover:-translate-y-0.5 shadow-sm" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
+                                <Link href={register.url()} className="px-5 py-2.5 rounded-md font-medium transition-transform hover:-translate-y-0.5 shadow-sm" style={{ backgroundColor: 'var(--text)', color: 'var(--background)' }}>
                                     Get Started
                                 </Link>
                             </>

@@ -1,13 +1,14 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
+import { update as nodesUpdate } from '@/actions/App/Http/Controllers/NodeController';
 
-export function useAutosave(nodeId, content, projectUrl, { delay = 1500 } = {}) {
+export function useAutosave(nodeId, content, project, { delay = 1500 } = {}) {
     const [saving, setSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState('saved');
     const timeoutRef = useRef(null);
     const lastSavedRef = useRef(content);
 
     const save = useCallback(() => {
-        if (!nodeId || !projectUrl || content === lastSavedRef.current) {
+        if (!nodeId || !project || content === lastSavedRef.current) {
             return;
         }
 
@@ -16,8 +17,8 @@ export function useAutosave(nodeId, content, projectUrl, { delay = 1500 } = {}) 
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-        fetch(`${projectUrl}/nodes/${nodeId}`, {
-            method: 'PATCH',
+        fetch(nodesUpdate.url({ user: project.user.username, project: project.slug, node: nodeId }), {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',

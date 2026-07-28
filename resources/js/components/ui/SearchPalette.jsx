@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, FileText, Folder, ChevronRight, X } from 'lucide-react';
+import { search as nodesSearch } from '@/routes';
 
-export function SearchPalette({ isOpen, onClose, onSelect, projectUrl }) {
+export function SearchPalette({ isOpen, onClose, onSelect, project }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -19,7 +20,7 @@ export function SearchPalette({ isOpen, onClose, onSelect, projectUrl }) {
     }, [isOpen]);
 
     const performSearch = useCallback((q) => {
-        if (!q.trim() || !projectUrl) {
+        if (!q.trim() || !project) {
             setResults([]);
 
             return;
@@ -27,7 +28,7 @@ export function SearchPalette({ isOpen, onClose, onSelect, projectUrl }) {
 
         setSearching(true);
 
-        fetch(`${projectUrl}/search?q=${encodeURIComponent(q)}`, {
+        fetch(nodesSearch.url({ user: project.user.username, project: project.slug }, { query: { q: encodeURIComponent(q) } }), {
             headers: {
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
@@ -44,7 +45,7 @@ export function SearchPalette({ isOpen, onClose, onSelect, projectUrl }) {
             .finally(() => {
                 setSearching(false);
             });
-    }, [projectUrl]);
+    }, [project]);
 
     useEffect(() => {
         if (debounceRef.current) {

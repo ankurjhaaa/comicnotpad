@@ -1,6 +1,7 @@
 import { useTheme } from '@/hooks/useTheme';
 import { Link } from '@inertiajs/react';
 import { LogOut } from 'lucide-react';
+import { logout } from '@/routes';
 
 export default function UserLayout({ children }) {
     const { theme, toggleTheme } = useTheme();
@@ -18,7 +19,7 @@ export default function UserLayout({ children }) {
                     <button onClick={toggleTheme} className="text-xs uppercase tracking-wider transition-opacity hover:opacity-80" style={{ color: 'var(--text-muted)' }}>
                         {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
                     </button>
-                    <Link href="/logout" method="post" as="button" className="flex items-center gap-1 transition-colors" style={{ color: 'var(--text-muted)' }} onMouseEnter={(e) => e.target.style.color = 'var(--danger)'} onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
+                    <Link href={logout.url()} method="post" as="button" className="flex items-center gap-1 transition-colors" style={{ color: 'var(--text-muted)' }} onMouseEnter={(e) => e.target.style.color = 'var(--danger)'} onMouseLeave={(e) => e.target.style.color = 'var(--text-muted)'}>
                         <LogOut size={14} />
                         Logout
                     </Link>
