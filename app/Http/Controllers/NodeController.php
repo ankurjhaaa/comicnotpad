@@ -26,6 +26,9 @@ class NodeController extends Controller
             $activeNode?->append('ancestors');
         }
 
+        $expandedCookie = $request->cookie('writeros-expanded');
+        $expandedFolders = $expandedCookie ? json_decode($expandedCookie, true) : null;
+
         return Inertia::render('home', [
             'tree' => Node::query()
                 ->root()
@@ -34,6 +37,7 @@ class NodeController extends Controller
                 ->orderBy('sort_order')
                 ->get(),
             'activeNode' => $activeNode,
+            'initialExpandedFolders' => $expandedFolders,
         ]);
     }
 

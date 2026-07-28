@@ -1,15 +1,17 @@
 import { useState, useRef } from 'react';
 import { ChevronRight, FileText, Folder, FolderOpen } from 'lucide-react';
 
-export function TreeNode({ node, activeNodeId, depth = 0, onSelect, onContextMenu }) {
-    const [isExpanded, setIsExpanded] = useState(depth === 0);
+export function TreeNode({ node, activeNodeId, depth = 0, onSelect, onContextMenu, expandedFolders, onToggleFolder }) {
+    // If not set in state, root folders are expanded, nested are collapsed
+    const isExpanded = expandedFolders[node.id] ?? (depth === 0);
+    
     const isFolder = node.type === 'folder';
     const isActive = node.id === activeNodeId;
     const hasChildren = isFolder && node.children_recursive && node.children_recursive.length > 0;
 
     function handleClick() {
         if (isFolder) {
-            setIsExpanded((prev) => !prev);
+            onToggleFolder(node.id, !isExpanded);
         } else {
             onSelect(node);
         }
@@ -75,6 +77,8 @@ export function TreeNode({ node, activeNodeId, depth = 0, onSelect, onContextMen
                             depth={depth + 1}
                             onSelect={onSelect}
                             onContextMenu={onContextMenu}
+                            expandedFolders={expandedFolders}
+                            onToggleFolder={onToggleFolder}
                         />
                     ))}
                 </div>

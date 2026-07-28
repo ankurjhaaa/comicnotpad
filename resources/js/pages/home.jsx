@@ -6,7 +6,7 @@ import { Editor } from '@/components/editor/Editor';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { useAutosave } from '@/hooks/useAutosave';
 
-export default function Home({ tree, activeNode: initialActiveNode }) {
+export default function Home({ tree, activeNode: initialActiveNode, initialExpandedFolders }) {
     const [activeNode, setActiveNode] = useState(initialActiveNode || null);
     const [content, setContent] = useState(initialActiveNode?.content || '');
     const [wordCount, setWordCount] = useState(0);
@@ -69,9 +69,10 @@ export default function Home({ tree, activeNode: initialActiveNode }) {
                 tree={tree || []}
                 activeNodeId={activeNode?.id}
                 onSelect={handleSelectNode}
+                initialExpandedFolders={initialExpandedFolders}
             />
         ),
-        [tree, activeNode?.id, handleSelectNode],
+        [tree, activeNode?.id, handleSelectNode, initialExpandedFolders],
     );
 
     return (

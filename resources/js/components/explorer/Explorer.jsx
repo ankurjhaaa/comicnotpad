@@ -5,11 +5,23 @@ import { TreeNode } from './TreeNode';
 import { ContextMenu } from '../ui/ContextMenu';
 import { Modal } from '../ui/Modal';
 
-export function Explorer({ tree = [], activeNodeId, onSelect, onSearch }) {
+export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialExpandedFolders }) {
     const [contextMenu, setContextMenu] = useState(null);
     const [createModal, setCreateModal] = useState(null);
     const [newItemName, setNewItemName] = useState('');
     const [submitting, setSubmitting] = useState(false);
+
+    // Use initial state from server to completely prevent hydration flashes
+    const [expandedFolders, setExpandedFolders] = useState(initialExpandedFolders || {});
+
+    const toggleFolder = useCallback((id, isExpanded) => {
+        setExpandedFolders((prev) => {
+            const next = { ...prev, [id]: isExpanded };
+            // Save state in cookie for SSR hydration
+            document.cookie = `writeros-expanded=${encodeURIComponent(JSON.stringify(next))}; path=/; max-age=31536000; SameSite=Lax`;
+            return next;
+        });
+    }, []);
 
     const handleContextMenu = useCallback((e, node) => {
         setContextMenu({
@@ -163,6 +175,8 @@ export function Explorer({ tree = [], activeNodeId, onSelect, onSearch }) {
                             activeNodeId={activeNodeId}
                             onSelect={onSelect}
                             onContextMenu={handleContextMenu}
+                            expandedFolders={expandedFolders}
+                            onToggleFolder={toggleFolder}
                         />
                     ))
                 )}
