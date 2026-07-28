@@ -6,6 +6,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProjectController;
 
+// Public Pages
+Route::get('/', function () {
+    return \Inertia\Inertia::render('Welcome');
+})->name('home');
+
+Route::get('/terms', function () {
+    return \Inertia\Inertia::render('Terms');
+})->name('terms');
+
+Route::get('/privacy', function () {
+    return \Inertia\Inertia::render('Privacy');
+})->name('privacy');
+
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('login', [AuthController::class, 'login']);
@@ -31,8 +44,3 @@ Route::middleware('auth')->group(function () {
         Route::get('search', [NodeController::class, 'search'])->name('search');
     });
 });
-
-// Public Landing Page
-Route::get('/', function () {
-    return \Inertia\Inertia::render('Welcome');
-})->name('home');

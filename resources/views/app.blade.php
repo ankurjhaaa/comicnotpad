@@ -16,13 +16,16 @@
         @viteReactRefresh
         @vite(['resources/css/app.css', 'resources/js/app.jsx', "resources/js/pages/{$page['component']}.jsx"])
         <x-inertia::head>
-            <title>{{ config('app.name', 'WriterOS') }}</title>
+            <title>{{ config('app.name', 'Evpad') }}</title>
         </x-inertia::head>
 
         <script>
             // Restore theme before paint to prevent flash
             (function() {
-                const theme = localStorage.getItem('writeros-theme') || 'light';
+                let theme = localStorage.getItem('writeros-theme');
+                if (!theme) {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
                 document.documentElement.setAttribute('data-theme', theme);
             })();
         </script>
