@@ -1,13 +1,13 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 
-export function useAutosave(nodeId, content, { delay = 1500 } = {}) {
+export function useAutosave(nodeId, content, projectUrl, { delay = 1500 } = {}) {
     const [saving, setSaving] = useState(false);
     const [saveStatus, setSaveStatus] = useState('saved');
     const timeoutRef = useRef(null);
     const lastSavedRef = useRef(content);
 
     const save = useCallback(() => {
-        if (!nodeId || content === lastSavedRef.current) {
+        if (!nodeId || !projectUrl || content === lastSavedRef.current) {
             return;
         }
 
@@ -16,7 +16,7 @@ export function useAutosave(nodeId, content, { delay = 1500 } = {}) {
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-        fetch(`/nodes/${nodeId}`, {
+        fetch(`${projectUrl}/nodes/${nodeId}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

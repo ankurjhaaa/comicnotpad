@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('nodes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('project_id')->constrained()->cascadeOnDelete();
             $table->foreignId('parent_id')->nullable()->constrained('nodes')->nullOnDelete();
             $table->string('name');
             $table->string('type')->default('page');

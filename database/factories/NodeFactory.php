@@ -16,6 +16,7 @@ class NodeFactory extends Factory
     public function definition(): array
     {
         return [
+            'project_id' => \App\Models\Project::factory(),
             'name' => fake()->words(2, true),
             'type' => 'page',
             'content' => fake()->paragraphs(3, true),

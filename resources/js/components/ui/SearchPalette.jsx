@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, FileText, Folder, ChevronRight, X } from 'lucide-react';
 
-export function SearchPalette({ isOpen, onClose, onSelect }) {
+export function SearchPalette({ isOpen, onClose, onSelect, projectUrl }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [selectedIndex, setSelectedIndex] = useState(0);
@@ -19,7 +19,7 @@ export function SearchPalette({ isOpen, onClose, onSelect }) {
     }, [isOpen]);
 
     const performSearch = useCallback((q) => {
-        if (!q.trim()) {
+        if (!q.trim() || !projectUrl) {
             setResults([]);
 
             return;
@@ -27,7 +27,7 @@ export function SearchPalette({ isOpen, onClose, onSelect }) {
 
         setSearching(true);
 
-        fetch(`/search?q=${encodeURIComponent(q)}`, {
+        fetch(`${projectUrl}/search?q=${encodeURIComponent(q)}`, {
             headers: {
                 'Accept': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
@@ -44,7 +44,7 @@ export function SearchPalette({ isOpen, onClose, onSelect }) {
             .finally(() => {
                 setSearching(false);
             });
-    }, []);
+    }, [projectUrl]);
 
     useEffect(() => {
         if (debounceRef.current) {

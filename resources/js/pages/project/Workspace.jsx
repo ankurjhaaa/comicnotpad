@@ -6,13 +6,13 @@ import { Editor } from '@/components/editor/Editor';
 import { Breadcrumb } from '@/components/ui/Breadcrumb';
 import { useAutosave } from '@/hooks/useAutosave';
 
-export default function Home({ tree, activeNode: initialActiveNode, initialExpandedFolders }) {
+export default function Workspace({ project, projectUrl, tree, activeNode: initialActiveNode, initialExpandedFolders }) {
     const [activeNode, setActiveNode] = useState(initialActiveNode || null);
     const [content, setContent] = useState(initialActiveNode?.content || '');
     const [wordCount, setWordCount] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
 
-    const { saveStatus, saveNow } = useAutosave(activeNode?.id, content);
+    const { saveStatus, saveNow } = useAutosave(activeNode?.id, content, projectUrl);
 
     const handleSelectNode = useCallback(
         (node, query = '') => {
@@ -20,7 +20,7 @@ export default function Home({ tree, activeNode: initialActiveNode, initialExpan
             saveNow();
 
             // Fetch full node data via JSON
-            fetch(`/nodes/${node.id}`, {
+            fetch(`${projectUrl}/nodes/${node.id}`, {
                 headers: {
                     'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',

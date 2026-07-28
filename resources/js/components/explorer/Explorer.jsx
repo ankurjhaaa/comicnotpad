@@ -5,7 +5,7 @@ import { TreeNode } from './TreeNode';
 import { ContextMenu } from '../ui/ContextMenu';
 import { Modal } from '../ui/Modal';
 
-export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialExpandedFolders }) {
+export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialExpandedFolders, projectUrl }) {
     const [contextMenu, setContextMenu] = useState(null);
     const [createModal, setCreateModal] = useState(null);
     const [newItemName, setNewItemName] = useState('');
@@ -42,7 +42,7 @@ export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialE
 
         setSubmitting(true);
 
-        router.post('/nodes', {
+        router.post(`${projectUrl}/nodes`, {
             name: newItemName.trim(),
             type: createModal.type,
             parent_id: createModal.parentId || null,
@@ -64,7 +64,7 @@ export function Explorer({ tree = [], activeNodeId, onSelect, onSearch, initialE
             return;
         }
 
-        router.delete(`/nodes/${node.id}`, {
+        router.delete(`${projectUrl}/nodes/${node.id}`, {
             preserveState: true,
             preserveScroll: true,
         });

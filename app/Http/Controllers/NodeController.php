@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreNodeRequest;
 use App\Http\Requests\UpdateNodeRequest;
 use App\Models\Node;
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,38 +16,11 @@ use Inertia\Response;
 class NodeController extends Controller
 {
     /**
-     * Render the main IDE workspace.
-     */
-    public function index(Request $request): Response
-    {
-        $activeNodeId = $request->query('node');
-        $activeNode = null;
-
-        if ($activeNodeId) {
-            $activeNode = Node::find($activeNodeId);
-            $activeNode?->append('ancestors');
-        }
-
-        $expandedCookie = $request->cookie('writeros-expanded');
-        $expandedFolders = $expandedCookie ? json_decode($expandedCookie, true) : null;
-
-        return Inertia::render('home', [
-            'tree' => Node::query()
-                ->root()
-                ->notTrashed()
-                ->with('childrenRecursive')
-                ->orderBy('sort_order')
-                ->get(),
-            'activeNode' => $activeNode,
-            'initialExpandedFolders' => $expandedFolders,
-        ]);
-    }
-
-    /**
      * Load a single node's data (JSON for editor).
      */
-    public function show(Node $node): JsonResponse
+    public function show(User $user, Project $project, Node $node): JsonResponse
     {
+        abort_if($node->project_id !== $project->id, 404);
         $node->append('ancestors');
 
         return response()->json($node);
@@ -55,14 +30,16 @@ class NodeController extends Controller
      * Create a new node (folder or page).
      * Returns Inertia redirect so the tree refreshes.
      */
-    public function store(StoreNodeRequest $request): RedirectResponse
+    public function store(StoreNodeRequest $request, User $user, Project $project): RedirectResponse
     {
         $maxSort = Node::query()
+            ->where('project_id', $project->id)
             ->where('parent_id', $request->validated('parent_id'))
             ->max('sort_order');
 
         $node = Node::create([
             ...$request->validated(),
+            'project_id' => $project->id,
             'sort_order' => ($maxSort ?? 0) + 1,
         ]);
 
@@ -73,8 +50,9 @@ class NodeController extends Controller
      * Update a node (rename, content save, metadata).
      * Returns JSON for autosave.
      */
-    public function update(UpdateNodeRequest $request, Node $node): JsonResponse
+    public function update(UpdateNodeRequest $request, User $user, Project $project, Node $node): JsonResponse
     {
+        abort_if($node->project_id !== $project->id, 404);
         $node->update($request->validated());
 
         return response()->json(['success' => true]);
@@ -84,8 +62,9 @@ class NodeController extends Controller
      * Soft-delete a node (move to trash).
      * Returns Inertia redirect so the tree refreshes.
      */
-    public function destroy(Node $node): RedirectResponse
+    public function destroy(User $user, Project $project, Node $node): RedirectResponse
     {
+        abort_if($node->project_id !== $project->id, 404);
         $node->update(['is_trashed' => true]);
         $this->trashDescendants($node);
 
@@ -95,12 +74,20 @@ class NodeController extends Controller
     /**
      * Move/reorder a node.
      */
-    public function move(Request $request, Node $node): RedirectResponse
+    public function move(Request $request, User $user, Project $project, Node $node): RedirectResponse
     {
+        abort_if($node->project_id !== $project->id, 404);
+        
         $validated = $request->validate([
             'parent_id' => ['nullable', 'integer', 'exists:nodes,id'],
             'sort_order' => ['required', 'integer', 'min:0'],
         ]);
+
+        // Ensure new parent belongs to the same project
+        if ($validated['parent_id']) {
+            $parent = Node::find($validated['parent_id']);
+            abort_if($parent->project_id !== $project->id, 403);
+        }
 
         $node->update($validated);
 
@@ -110,13 +97,14 @@ class NodeController extends Controller
     /**
      * Global search across all nodes (JSON).
      */
-    public function search(Request $request): JsonResponse
+    public function search(Request $request, User $user, Project $project): JsonResponse
     {
         $query = $request->validate([
             'q' => ['required', 'string', 'min:1', 'max:255'],
         ])['q'];
 
         $results = Node::query()
+            ->where('project_id', $project->id)
             ->notTrashed()
             ->where(function ($builder) use ($query) {
                 $builder->where('name', 'like', "%{$query}%")

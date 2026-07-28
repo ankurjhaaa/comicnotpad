@@ -41,7 +41,7 @@ export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explo
 
     return (
         <div
-            className={`flex h-screen flex-col ${focusMode ? 'focus-mode' : ''}`}
+            className={`flex h-screen overflow-hidden flex-col ${focusMode ? 'focus-mode' : ''}`}
             style={{ backgroundColor: 'var(--background)' }}
         >
             {/* Main content area */}
@@ -91,6 +91,7 @@ export function AppLayout({ children, wordCount = 0, saveStatus = 'saved', explo
                 isOpen={showSearch}
                 onClose={() => setShowSearch(false)}
                 onSelect={onSearchSelect}
+                projectUrl={explorerContent?.props?.projectUrl}
             />
         </div>
     );

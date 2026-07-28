@@ -24,7 +24,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['parent_id', 'name', 'type', 'icon', 'content', 'meta', 'sort_order', 'is_trashed'])]
+#[Fillable(['project_id', 'parent_id', 'name', 'type', 'icon', 'content', 'meta', 'sort_order', 'is_trashed'])]
 class Node extends Model
 {
     /** @use HasFactory<NodeFactory> */
@@ -47,6 +47,11 @@ class Node extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(Node::class, 'parent_id');
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
     }
 
     /**

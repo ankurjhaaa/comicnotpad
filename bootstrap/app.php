@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->encryptCookies(except: [
             'writeros-expanded',
         ]);
+        $middleware->redirectUsersTo(fn () => '/' . (auth()->user()?->username ?? ''));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
